@@ -1,58 +1,120 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+using namespace std;
 
-/* 
-student structure, 
-  student name, ID, test scores, avg, and final letter grade 
-*/
-
-struct Stdnt {
-string name;
-int id;
-double* tests;
-double avg;
-char grade;
+// Student structure, holds data.
+struct student {
+    string name;
+    int id;
+    double* tests;
+    double average;
+    char grade;
 };
 
+
+student* grabData(ifstream& file, int& stCnt, int& testCnt);
+
 /*
-Referencing to an opened ifsteam, studentCnt will hold the # of students, testCnt will hold the # of tests.
+    calcAvg
+    Icludes the folowing:
+student array,
+stCnt - student #,
+testCnt - test #.
 */
+void calcAvg(student students[], int stCnt, int testCnt);
 
-student* getData(ifsteam& file, int& studentCnt, int&t testCnt);
+void printReport(student students[], int stCnt);
 
-void calcAverage(student students[], int studentCnt, int testCnt);
-
-void printReprt(student students[], int studentCnt);
-
+//   grabLetter - returns a letter grade based on the avg.
 
 char grabLetter(double avg);
 
+
+
 int main() {
-ifstream file("student_data");
-  if (!file) {
-    cout << "Something went wrong when opening the file.\n";
-    return 1;
-  }
+    ifstream file("student_data");
+    if (!file) {
+        cout << "Something went wrong - sorry!\n";
+        return 1;
+    }
 
-int studentCnt, testCnt;
+    int stCnt, testCnt;
 
-  // Read data 
-  student* students = getData(file, studentCnt, testCnt);
+    // Read and build student data
+    student* students = grabData(file, stCnt, testCnt);
 
-  // Calculation
-  calcAvg(student, studentCnt, testCnt);
+    // Calculates the average and letter grade.
+    calcAvg(students, stCnt, testCnt);
 
-  // Report
-printReprt(students, studentCnt);
+    // Output of the report.
+    printReport(students, stCnt);
 
-  // Clean up
-  for (int i = 0; i < studentCnt; i++) {
-    delete[] students[i].tests;
-  }
-  delete[] students;
+    // Dynamically allocated memory is cleared.
+    for (int i = 0; i < stCnt; i++) {
+        delete[] students[i].tests;  
+    }
+    delete[] students;                
 
-  return 0;
-  }
+    return 0;
+}
 
+
+
+// Definitions.
+
+student* grabData(ifstream& file, int& stCnt, int& testCnt) {
+    file >> stCnt >> testCnt;
+
+    student* students = new student[stCnt];
+
+    for (int i = 0; i < stCnt; i++) {
+
+        file >> students[i].name;
+        file >> students[i].id;
+
+        students[i].tests = new double[testCnt];
+
+        for (int j = 0; j < testCnt; j++) {
+            file >> students[i].tests[j];
+        }
+    }
+
+    return students;
+}
+
+
+void calcAvg(student students[], int stCnt, int testCnt) {
+    for (int i = 0; i < stCnt; i++) {
+
+        double total = 0;
+
+        for (int j = 0; j < testCnt; j++) {
+            total += students[i].tests[j];
+        }
+
+        students[i].average = total / testCnt;
+        students[i].grade = grabLetter(students[i].average);
+    }
+}
+
+
+void printReport(student students[], int stCnt) {
+    cout << "Student/ID/Score/Grade\n";
+
+    for (int i = 0; i < stCnt; i++) {
+        cout << students[i].name << "/"
+             << students[i].id << "/"
+             << students[i].average << "/"
+             << students[i].grade << endl;
+    }
+}
+
+
+char grabLetter(double avg) {
+    if (avg >= 90) return 'A';
+    if (avg >= 80) return 'B';
+    if (avg >= 70) return 'C';
+    if (avg >= 60) return 'D';
+    return 'F';
 }
