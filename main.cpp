@@ -13,18 +13,18 @@ struct student {
 };
 
 
-student* grabData(ifstream& file, int& stCnt, int& testCnt);
+student* grabData(ifstream& file, int& studentCnt, int& testCnt);
 
 /*
     calcAvg
     Icludes the folowing:
 student array,
-stCnt - student #,
+studentCnt - student #,
 testCnt - test #.
 */
-void calcAvg(student students[], int stCnt, int testCnt);
+void calcAvg(student students[], int studentCount, int testCnt);
 
-void printReport(student students[], int stCnt);
+void printReport(student students[], int studentCnt);
 
 //   grabLetter - returns a letter grade based on the avg.
 
@@ -39,19 +39,19 @@ int main() {
         return 1;
     }
 
-    int stCnt, testCnt;
+    int studentCnt, testCnt;
 
     // Read and build student data
-    student* students = grabData(file, stCnt, testCnt);
+    student* students = grabData(file, studentCnt, testCnt);
 
     // Calculates the average and letter grade.
-    calcAvg(students, stCnt, testCnt);
+    calcAvg(students, studentCnt, testCnt);
 
     // Output of the report.
-    printReport(students, stCnt);
+    printReport(students, studentCnt);
 
     // Dynamically allocated memory is cleared.
-    for (int i = 0; i < stCnt; i++) {
+    for (int i = 0; i < studentCnt; i++) {
         delete[] students[i].tests;  
     }
     delete[] students;                
@@ -63,12 +63,12 @@ int main() {
 
 // Definitions.
 
-student* grabData(ifstream& file, int& stCnt, int& testCnt) {
-    file >> stCnt >> testCnt;
+student* grabData(ifstream& file, int& studentCnt, int& testCnt) {
+    file >> studentCnt >> testCnt;
 
-    student* students = new student[stCnt];
+    student* students = new student[studentCnt];
 
-    for (int i = 0; i < stCnt; i++) {
+    for (int i = 0; i < studentCnt; i++) {
 
         file >> students[i].name;
         file >> students[i].id;
@@ -84,8 +84,8 @@ student* grabData(ifstream& file, int& stCnt, int& testCnt) {
 }
 
 
-void calcAvg(student students[], int stCnt, int testCnt) {
-    for (int i = 0; i < stCnt; i++) {
+void calcAvg(student students[], int studentCnt, int testCnt) {
+    for (int i = 0; i < studentCnt; i++) {
 
         double total = 0;
 
@@ -99,10 +99,10 @@ void calcAvg(student students[], int stCnt, int testCnt) {
 }
 
 
-void printReport(student students[], int stCnt) {
+void printReport(student students[], int studentCnt) {
     cout << "Student/ID/Score/Grade\n";
 
-    for (int i = 0; i < stCnt; i++) {
+    for (int i = 0; i < studentCnt; i++) {
         cout << students[i].name << "/"
              << students[i].id << "/"
              << students[i].average << "/"
